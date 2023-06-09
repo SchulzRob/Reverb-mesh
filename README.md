@@ -5,7 +5,7 @@ Dynamically apply filters on an audio stream.
 - [Reverb-mesh](#Reverb-mesh)
   - [Description](#description)
   - [Design](#design)
-  - [Running project](#running-project#)
+  - [Running project](#running-project)
 ***
 
 ## Description
