@@ -5,6 +5,7 @@ Dynamically apply filters on an audio stream.
 - [Reverb-mesh](#Reverb-mesh)
   - [Description](#description)
   - [Design](#design)
+  - [Running project](#running-project#)
 ***
 
 ## Description
@@ -19,3 +20,27 @@ Das Projekt soll sich vor allem auf die Anwendung der Filter fokussieren und nic
 **Design sketch**
 
 ![](docs/mockup_design.png)
+
+## Running project
+### Developing
+
+Once you've installed dependencies with `npm install`, start a development server:
+
+```bash
+npm run dev
+
+# or start the server and open the app in a new browser tab
+npm run dev -- --open
+```
+
+### Building
+
+To create a production version of your app:
+
+```bash
+npm run build
+```
+
+You can preview the production build with `npm run preview`.
+
+> To deploy your app, you may need to install an [adapter](https://kit.svelte.dev/docs/adapters) for your target environment.
