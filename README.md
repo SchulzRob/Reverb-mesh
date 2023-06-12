@@ -6,6 +6,7 @@ Dynamically apply filters on an audio stream.
   - [Description](#description)
   - [Design](#design)
   - [Running project](#running-project)
+  - [TODO](#todo)
 ***
 
 ## Description
@@ -44,3 +45,8 @@ npm run build
 You can preview the production build with `npm run preview`.
 
 > To deploy your app, you may need to install an [adapter](https://kit.svelte.dev/docs/adapters) for your target environment.
+
+## TODO
+- [ ] More filters
+- [ ] Add filter options (f.i. set frequency, quality)
+- [x] Equalizer
