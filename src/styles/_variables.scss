@@ -1,3 +1,5 @@
+@use "sass:color";
+
 // Colors
 $primary-blue: #6666ff;
 $primary-yellow: yellow;
@@ -5,6 +7,14 @@ $primary-yellow: yellow;
 $button-background-color: $primary-blue;
 $button-color: #ffffff;
 $button-shadow-color: #bababa;
+
+$background-color: #808080;
+$background-color-light: lighten($background-color, 20%);
+$border-color: color.scale($background-color, $lightness: -50%);
+
+// Border
+$border: 2px solid $border-color;
+$border-radius: 0.5rem;
 
 // Fonts
 $header-font-family: 'Courier New';
