@@ -5,23 +5,22 @@
 	import { filterManager } from '$lib/stores/stores.js';
 
 	const filterToItem = filter => {
-		const { label, makeFilter } = filter;
-
 		return {
-			label: label,
+			label: filter.id,
 			onSelect: evt => {
-				if (makeFilter != undefined) {
-					$filterManager.addFilter(label, makeFilter);
+				if (filter.makeFilter) {
+					$filterManager.addFilter(filter.id, filter);
 					filterManager.set($filterManager); // Reactivity
 				}
 			},
 			onDeselect: () => {
-				if (makeFilter != undefined) {	
-					$filterManager.removeFilter(label);
+				if (filter.makeFilter) {
+					$filterManager.removeFilter(filter.id);
 					filterManager.set($filterManager); // Reactivity
 				}
 			},
-			selected: false
+			selected: false,
+			options: filter.options
 		};
 	};
 
@@ -41,8 +40,9 @@
 </div>
 
 <style lang="scss">
+	@import "variables";
+
 	div {
-		border: 1px solid black;
 		display: flex;
 		flex-flow: column;
 		align-items: center;
@@ -50,5 +50,8 @@
 
 		width: 30%;
 		height: max-content;
+
+		border: $border;
+		border-radius: $border-radius;
 	}
 </style>

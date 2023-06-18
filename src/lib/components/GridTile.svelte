@@ -6,7 +6,7 @@
 
 	const dispatch = createEventDispatcher();
 	
-	const onClick = evt => {
+	const onInput = evt => {
 		if (selected) {
 			console.debug(`Deselected tile "${label}"`);
 			dispatch('deselect');
@@ -14,29 +14,50 @@
 			console.debug(`Selected tile "${label}"`);
 			dispatch('select');
 		}
-	};	
+	};
 </script>
 
 <div class="gap">
-	<div class:selected on:click={onClick}>
-		{label}
+	<div class="container" class:selected>
+		<div class="label">
+			<span>{label}</span>
+			<input type="checkbox" bind:checked={selected} on:input={onInput}>
+		</div>
+		<slot></slot>
 	</div>
 </div>
 
 <style lang="scss">
+	@import "variables";
+
 	div.gap {
 		padding: 0.5rem;
 		box-sizing: border-box;
 
-		div {
-			border: 1px solid black;
-			box-sizing: border-box;
-			width: 64px;
-			height: 64px;
-			cursor: pointer;
+		div.container {
+			border: $border;
+			border-radius: $border-radius;
+			background-color: $background-color-light;
 
+			box-sizing: border-box;
+			min-width: 64px;
+			min-height: 64px;
+			padding: 2px;
+			
 			&.selected {
 				background-color: #00000044;
+			}
+
+			div.label {
+				display: flex;
+				flex-flow: row;
+				align-items: center;
+				justify-content: space-between;
+				padding-bottom: 2px;
+
+				button {
+					cursor: pointer;
+				}
 			}
 		}
 	}
