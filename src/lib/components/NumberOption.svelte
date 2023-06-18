@@ -2,42 +2,44 @@
 	export let option;
 	export let label;
 
-	const MAX_NUM = 3.4028234663852886e+38;
+	import { MAX_NUM } from '$lib/audio_utils.js';
 
 	const prettifyValue = value => {
-		if (value == MAX_NUM || value == -MAX_NUM) {
+		if (value == MAX_NUM) {
 			return 'Inf.';	
+		} else if (value == -MAX_NUM) {
+			return '-Inf.';	
 		}
 
 		return value;
 	};
 </script>
 
-<div class="container">
-	<label>{label}</label>
-	<span class="left">{prettifyValue(option.minValue)}</span>
-	<div>
-	<input type="number" min={option.minValue} max={option.maxValue} step={option.step} bind:value={option.value}>
-	</div>
-	<span class="right">{prettifyValue(option.maxValue)}</span>
-</div>
+<tr class="container">
+	<td>
+		<label>{label}</label>
+	</td>
+	<td class="field-bg">
+		<span>{prettifyValue(option.minValue)}</span>
+	</td>
+	<td>
+		<div>
+			<input type="number" min={option.minValue} max={option.maxValue} step={option.step} bind:value={option.value}>
+		</div>
+	</td>
+	<td class="field-bg">
+		<span>{prettifyValue(option.maxValue)}</span>
+	</td>
+</tr>
 
 <style lang="scss">
 	@use "sass:color";
+	@import "variables";
 
-	$background-color: #808080;
-	$background-color-light: lighten($background-color, 20%);
-	$border-color: color.scale($background-color, $lightness: -50%);
 	$font-size: 1rem;
-	$border-radius: 0.5rem;
 
-	div.container {
-		width: max-content;
-		display: flex;
-		flex-flow: row;
-		align-items: center;
+	tr.container {
 		border: 2px solid $border-color;
-		border-radius: $border-radius;
 		overflow: hidden;
 		background-color: $border-color; 
 		
@@ -47,34 +49,29 @@
 			color: white;
 		}
 
-		span {
-			background-color: $background-color; 
-			padding: 2px 4px;
-			box-sizing: border-box;
-			font-size: $font-size;
-
-			&.left {
-				//padding-right: 0;
-				//border-right: 4px groove $background-color;
-				border-top-left-radius: $border-radius;
-				border-bottom-left-radius: $border-radius;
+		td {
+			&.field-bg {
+				background-color: $background-color;
 			}
 
-			&.right {
-				//padding-left: 0;
-				//border-left: 4px ridge $background-color;
-			}
-		}
-
-		div {
-			background-color: $background-color-light;
-			height: 100%;
-
-			input[type=number] {
-				width: 50px;
-				background-color: $background-color-light;
-				border: none;
+			span {
+				background-color: $background-color; 
+				padding: 2px 4px;
 				font-size: $font-size;
+			}
+
+			div {
+				background-color: $background-color-light;
+				height: 100%;
+
+				input[type=number] {
+					width: 50px;
+					background-color: $background-color-light;
+					border: none;
+					font-size: $font-size;
+				}
+
+				padding-bottom: 1px;
 			}
 		}
 	}
