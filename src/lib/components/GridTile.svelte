@@ -56,7 +56,6 @@
 			box-sizing: border-box;
 			width: $size;
 			height: $size;
-			padding: 2px;
 
 			display: flex;
 			flex-flow: column;
@@ -82,10 +81,6 @@
 				align-items: center;
 				justify-content: space-between;
 				padding-bottom: 2px;
-
-				button {
-					cursor: pointer;
-				}
 			}
 		}
 	}
