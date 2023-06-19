@@ -1,16 +1,21 @@
 <script>
 	import Button from './Button.svelte';
 	import { createEventDispatcher } from 'svelte';
+	import { secondsToMMSS } from '$lib/utils.js';
 
 	export let getAudioCtx;
 
 	const dispatch = createEventDispatcher();
 
 	let mediaRecorder;
+	let timeInterval;
+	let seconds = 0;
 	const onClick = () => {
 		if (mediaRecorder) {
 			mediaRecorder.stop();
 			mediaRecorder = undefined;
+			clearInterval(timeInterval);
+			seconds = 0;
 			return;
 		}
 		
@@ -37,11 +42,16 @@
 					console.log('Stopped recording');
 				};
 
-				mediaRecorder.start();	
+				mediaRecorder.start();
+				timeInterval = setInterval(() => seconds++, 1000);
 				console.log('Started recording');
 			});
 	};
 
+	const formatSeconds = seconds => {
+		return secondsToMMSS(seconds);
+	};
+
 </script>
 
-<Button label={mediaRecorder ? 'Stop recording' : 'Start recording'} on:click={onClick} />
+<Button label={mediaRecorder ? `Stop recording ${formatSeconds(seconds)}` : 'Start recording'} on:click={onClick} />
