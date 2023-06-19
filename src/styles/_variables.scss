@@ -10,7 +10,9 @@ $button-shadow-color: #bababa;
 
 $background-color: #808080;
 $background-color-light: lighten($background-color, 20%);
+$primary-background-color: #c5bfc5;
 $border-color: color.scale($background-color, $lightness: -50%);
+$font-color: #ffffff;
 
 // Border
 $border: 2px solid $border-color;
