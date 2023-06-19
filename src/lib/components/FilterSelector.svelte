@@ -2,32 +2,45 @@
 	export let filters;
 
 	import GridSelector from './GridSelector.svelte';
+	import OptionMenu from './OptionMenu.svelte';
 	import { filterManager } from '$lib/stores/stores.js';
 
 	const filterToItem = filter => {
-		return {
+		const item = {
 			label: filter.id,
-			onSelect: evt => {
+			icon: filter.icon,
+			onEnable: evt => {
 				if (filter.makeFilter) {
 					$filterManager.addFilter(filter.id, filter);
 					filterManager.set($filterManager); // Reactivity
 				}
 			},
-			onDeselect: () => {
+			onDisable: () => {
 				if (filter.makeFilter) {
 					$filterManager.removeFilter(filter.id);
 					filterManager.set($filterManager); // Reactivity
 				}
 			},
-			selected: false,
-			options: filter.options
+			enabled: false,
+			options: filter.options,
+			onClick: () => {
+				lastClicked.selected = false;
+				lastClicked = item;
+				lastClicked.selected = true;
+				items = items; // Reactivity
+			},
+			selected: false
 		};
+		return item;
 	};
 
 	let items = filters.map(filterToItem);
+	let lastClicked = items[0];
+	lastClicked.selected = true;
+
 	$: {
 		for (const item of items) {
-			item.selected = $filterManager.filterIsApplied(item.label);
+			item.enabled = $filterManager.filterIsApplied(item.label);
 		}
 		items = items; // Reactivity
 	}
@@ -37,6 +50,7 @@
 	<h2>Filters</h2>
 
 	<GridSelector {items} />
+	<OptionMenu options={lastClicked.options} title={` of ${lastClicked.label}`} />
 </div>
 
 <style lang="scss">

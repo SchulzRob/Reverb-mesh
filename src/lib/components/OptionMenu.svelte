@@ -1,26 +1,26 @@
 <script>
 	export let options;
+	export let title = '';
 
 	import NumberOption from './NumberOption.svelte';
-
-	let visible = false;
 </script>
 
 <div class="container">
-	<div>
-		<span>Options</span>
-		<button on:click={() => visible = !visible}>x</button>
-	</div>
-	<table style:display={visible ? 'table' : 'none'} cellspacing="0" cellpadding="0">
+	<span>Options {title}</span>
+	<table cellspacing="0" cellpadding="0">
 		<!--<tr>
 			<th>name</th>
 			<th>min</th>
 			<th>val</th>
 			<th>max</th>
 		</tr>-->
-		{#each options as option}
-			<NumberOption label={option.name} {option} />
-		{/each}
+		{#if options == undefined}
+			<span>No options</span>
+		{:else}
+			{#each options as option}
+				<NumberOption label={option.name} {option} />
+			{/each}
+		{/if}
 	</table>
 </div>
 
@@ -33,15 +33,13 @@
 		border-radius: 0.5rem;
 		overflow: hidden;
 		background-color: $border-color;
+		width: 100%;
 
-		div {
-			display: flex;
-			justify-content: space-between;
-
-			span {
-				color: white;
-				padding: 2px;
-			}
+		span {
+			display: block;
+			color: white;
+			padding: 2px;
+			margin-bottom: 4px;
 		}
 	}
 </style>

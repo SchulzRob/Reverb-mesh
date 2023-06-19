@@ -1,34 +1,48 @@
 <script>
 	export let label;
-	export let selected;
+	export let checked;
+	export let selected = false;
+	export let icon = undefined;
 
 	import { createEventDispatcher } from 'svelte';
 
 	const dispatch = createEventDispatcher();
 	
 	const onInput = evt => {
-		if (selected) {
-			console.debug(`Deselected tile "${label}"`);
-			dispatch('deselect');
+		if (checked) {
+			console.debug(`Unchecked tile "${label}"`);
+			dispatch('disable');
 		} else {
-			console.debug(`Selected tile "${label}"`);
-			dispatch('select');
+			console.debug(`Checked tile "${label}"`);
+			dispatch('enable');
+		}
+	};
+
+	const onClick = evt => {
+		// Prevent checkbox check/uncheck from calling the onClick listener
+		if (evt.target.tagName != 'INPUT') {
+			dispatch('click');
 		}
 	};
 </script>
 
 <div class="gap">
-	<div class="container" class:selected>
+	<div class="container" class:selected on:click={onClick}>
+		{#if icon != undefined}
+			<img src={icon} alt={label}>
+		{/if}
 		<div class="label">
 			<span>{label}</span>
-			<input type="checkbox" bind:checked={selected} on:input={onInput}>
+			<input type="checkbox" bind:checked={checked} on:input={onInput}>
 		</div>
-		<slot></slot>
 	</div>
 </div>
 
 <style lang="scss">
 	@import "variables";
+
+	$size: 94px;
+	$icon-size: 64px;
 
 	div.gap {
 		padding: 0.5rem;
@@ -40,12 +54,26 @@
 			background-color: $background-color-light;
 
 			box-sizing: border-box;
-			min-width: 64px;
-			min-height: 64px;
+			width: $size;
+			height: $size;
 			padding: 2px;
-			
+
+			display: flex;
+			flex-flow: column;
+			align-items: center;
+			justify-content: center;
+
+			&:hover {
+				cursor: pointer;
+			}
+
 			&.selected {
-				background-color: #00000044;
+				background-color: $background-color;
+			}
+
+			img {
+				width: $icon-size;
+				height: $icon-size;
 			}
 
 			div.label {
