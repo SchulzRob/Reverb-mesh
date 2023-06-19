@@ -42,10 +42,11 @@ export class FilterOption {
 }
 
 export class Filter {
-	constructor(id, makeFilter, options=undefined) {
+	constructor(id, makeFilter, icon, options=undefined) {
 		this.id = id;
 		this.makeFilter = makeFilter;
 		this.options = options;
+		this.icon = icon;
 
 		// Apply options on filter every time their values change
 		if (options != undefined) {

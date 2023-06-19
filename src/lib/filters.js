@@ -1,4 +1,5 @@
 import { FilterOption, Filter, MAX_NUM } from '$lib/audio_utils.js';
+import lowpassIcon from '$static/images/lowpass.svg';
 
 
 export const lowpass = audioCtx => {
@@ -27,10 +28,12 @@ const frequencyOption = new FilterOption('frequency', -24000, 24000, 200, (filte
 const gainOption = new FilterOption('gain', -MAX_NUM, MAX_NUM, 0, (filter, option) => filter.gain.value = option.value);
 const qOption = new FilterOption('frequency', -MAX_NUM, MAX_NUM, 1, (filter, option) => filter.Q.value = option.value);
 
-const lowpassFilter = new Filter('lowpass', lowpass, [frequencyOption.clone()]);
-const lowpass2Filter = new Filter('lowpass2', lowpass2, [frequencyOption.clone(), gainOption.clone()]);
+const lowpassFilter = new Filter('lowpass', lowpass, lowpassIcon, [frequencyOption.clone()]);
+const lowpass2Filter = new Filter('lowpass2', lowpass2, lowpassIcon, [frequencyOption.clone(), gainOption.clone()]);
+const lowpass3Filter = new Filter('lowpass3', lowpass, lowpassIcon);
 
 export default [
 	lowpassFilter,
-	lowpass2Filter
+	lowpass2Filter,
+	lowpass3Filter
 ];
