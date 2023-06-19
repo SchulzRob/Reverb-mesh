@@ -1,5 +1,5 @@
 import audiobufferToBlob from 'audiobuffer-to-blob';
-
+import filterDefaultIcon from '$static/images/filter_default.svg';
 
 export const MAX_NUM = 3.4028234663852886e+38;
 
@@ -46,7 +46,7 @@ export class Filter {
 		this.id = id;
 		this.makeFilter = makeFilter;
 		this.options = options;
-		this.icon = icon;
+		this.icon = icon == undefined ? filterDefaultIcon : icon;
 
 		// Apply options on filter every time their values change
 		if (options != undefined) {
