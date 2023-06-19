@@ -8,9 +8,6 @@
 	import { renderAudio } from '$lib/audio_utils.js';
 	import { filterManager } from '$lib/stores/stores.js';
 
-//	import { lowpass } from '$lib/filters.js';
-
-
 	let player;
 	let sourceFile;
 
@@ -45,16 +42,7 @@
 			$filterManager.init(audioCtx, audioSource);
 		}
 
-		// Default: no filters
 		audioSource.connect(audioCtx.destination);
-
-		/*const fl = lowpass(audioCtx);
-		
-		audioSource.connect(fl);
-		fl.connect(audioCtx.destination);
-
-		console.log(fl);
-		console.log(audioSource);*/
 	};
 
 	const getFile = async () => {
