@@ -2,6 +2,7 @@
 	import FileUploadButton from './FileUploadButton.svelte';
 	import FileDownloadButton from './FileDownloadButton.svelte';
 	import InfoBox from './InfoBox.svelte';
+	import AudioRecorder from './AudioRecorder.svelte';
 	import { onDestroy } from 'svelte';
 	import exclamationCircle from '$lib/images/exclamation-circle.svg';
 	import infoCircle from '$lib/images/info-circle.svg';
@@ -19,6 +20,16 @@
 		sourceFile = undefined;
 	};
 
+	const init = () => {
+		// Init audio context
+		if (audioCtx == undefined || audioSource == undefined) {
+			audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+			audioSource = audioCtx.createMediaElementSource(player);
+
+			$filterManager.init(audioCtx, audioSource);
+		}
+	};
+
 	let audioCtx, audioSource;
 	const onUpload = file => {
 		if (file.detail == undefined) {
@@ -34,13 +45,7 @@
 		console.debug(`Created audio sourceFile URL: ${sourceFile.url}`);
 		player.src = sourceFile.url;
 		
-		// Init audio context
-		if (audioCtx == undefined || audioSource == undefined) {
-			audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-			audioSource = audioCtx.createMediaElementSource(player);
-
-			$filterManager.init(audioCtx, audioSource);
-		}
+		init();
 
 		audioSource.connect(audioCtx.destination);
 	};
@@ -57,6 +62,12 @@
 			name: sourceFile.name,
 			url: url
 		};
+	};
+
+	const onRecording = evt => {
+		clearSourceURL();
+		sourceFile = evt.detail;
+		player.src = sourceFile.url;
 	};
 
 	onDestroy(clearSourceURL);
@@ -76,6 +87,7 @@
 	<div class="buttons">
 		<FileUploadButton on:upload={onUpload} label="Upload audio" accept="audio/*" style="margin-bottom: 0.25rem;" />
 		<FileDownloadButton {getFile} label="Download audio" waitingLabel="Rendering audio.." />
+		<AudioRecorder getAudioCtx={() => {init(); return audioCtx;}} on:data={onRecording} />
 	</div>
 </div>
 
