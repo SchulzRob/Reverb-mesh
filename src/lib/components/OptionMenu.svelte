@@ -6,22 +6,22 @@
 </script>
 
 <div class="container">
-	<span>Options {title}</span>
-	<table cellspacing="0" cellpadding="0">
-		<!--<tr>
-			<th>name</th>
-			<th>min</th>
-			<th>val</th>
-			<th>max</th>
-		</tr>-->
-		{#if options == undefined}
-			<span>No options</span>
-		{:else}
+	<span class="header">Options {title}</span>
+	{#if options == undefined}
+		<span>No options</span>
+	{:else}
+		<table cellspacing="0" cellpadding="0">
+			<!--<tr>
+				<th>name</th>
+				<th>min</th>
+				<th>val</th>
+				<th>max</th>
+			</tr>-->
 			{#each options as option}
 				<NumberOption label={option.name} {option} />
 			{/each}
-		{/if}
-	</table>
+		</table>
+	{/if}
 </div>
 
 <style lang="scss">
@@ -39,7 +39,11 @@
 			display: block;
 			color: white;
 			padding: 2px;
-			margin-bottom: 4px;
+					
+			&.header {
+				text-decoration: underline;
+				margin-bottom: 4px;
+			}
 		}
 	}
 </style>

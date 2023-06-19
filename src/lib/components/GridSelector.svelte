@@ -22,5 +22,6 @@
 		flex-wrap: wrap;
 		padding: 0.5rem;
 		align-items: flex-start;
+		justify-content: center;
 	}
 </style>

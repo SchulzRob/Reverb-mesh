@@ -48,7 +48,6 @@
 
 <div>
 	<h2>Filters</h2>
-
 	<GridSelector {items} />
 	<OptionMenu options={lastClicked.options} title={` of ${lastClicked.label}`} />
 </div>
@@ -67,5 +66,13 @@
 
 		border: $border;
 		border-radius: $border-radius;
+
+		h2 {
+			margin: 0;
+			color: $font-color;
+			background-color: $border-color;
+			width: 100%;
+			text-align: center;
+		}
 	}
 </style>
