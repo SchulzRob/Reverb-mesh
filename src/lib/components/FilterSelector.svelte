@@ -2,33 +2,45 @@
 	export let filters;
 
 	import GridSelector from './GridSelector.svelte';
+	import OptionMenu from './OptionMenu.svelte';
 	import { filterManager } from '$lib/stores/stores.js';
 
 	const filterToItem = filter => {
-		const { label, makeFilter } = filter;
-
-		return {
-			label: label,
-			onSelect: evt => {
-				if (makeFilter != undefined) {
-					$filterManager.addFilter(label, makeFilter);
+		const item = {
+			label: filter.id,
+			icon: filter.icon,
+			onEnable: evt => {
+				if (filter.makeFilter) {
+					$filterManager.addFilter(filter.id, filter);
 					filterManager.set($filterManager); // Reactivity
 				}
 			},
-			onDeselect: () => {
-				if (makeFilter != undefined) {	
-					$filterManager.removeFilter(label);
+			onDisable: () => {
+				if (filter.makeFilter) {
+					$filterManager.removeFilter(filter.id);
 					filterManager.set($filterManager); // Reactivity
 				}
+			},
+			enabled: false,
+			options: filter.options,
+			onClick: () => {
+				lastClicked.selected = false;
+				lastClicked = item;
+				lastClicked.selected = true;
+				items = items; // Reactivity
 			},
 			selected: false
 		};
+		return item;
 	};
 
 	let items = filters.map(filterToItem);
+	let lastClicked = items[0];
+	lastClicked.selected = true;
+
 	$: {
 		for (const item of items) {
-			item.selected = $filterManager.filterIsApplied(item.label);
+			item.enabled = $filterManager.filterIsApplied(item.label);
 		}
 		items = items; // Reactivity
 	}
@@ -36,13 +48,14 @@
 
 <div>
 	<h2>Filters</h2>
-
 	<GridSelector {items} />
+	<OptionMenu options={lastClicked.options} title={` of ${lastClicked.label}`} />
 </div>
 
 <style lang="scss">
+	@import "variables";
+
 	div {
-		border: 1px solid black;
 		display: flex;
 		flex-flow: column;
 		align-items: center;
@@ -50,5 +63,16 @@
 
 		width: 30%;
 		height: max-content;
+
+		border: $border;
+		border-radius: $border-radius;
+
+		h2 {
+			margin: 0;
+			color: $font-color;
+			background-color: $border-color;
+			width: 100%;
+			text-align: center;
+		}
 	}
 </style>

@@ -1,3 +1,5 @@
+import { FilterOption, Filter, MAX_NUM } from '$lib/audio_utils.js';
+import lowpassIcon from '$static/images/lowpass.svg';
 
 
 //Simple Biquad audioFilter
@@ -83,90 +85,6 @@ export const allhpass = audioCtx => {
     return audioFilter;
 };
 
-
-
-export const flanger = audioCtx => {
-    const delayNode = audioCtx.createDelay();
-    delayNode.delayTime.value = 0.02;
-    
-    const feedbackNode = audioCtx.createGain();
-    feedbackNode.gain.value = 0.5;
-
-    const audioFilter = audioCtx.createBiquadFilter();
-    audioFilter.type = 'lowpass';
-    const lfoGainNode = audioCtx.createGain();
-    lfoGainNode.gain.value = 0.003;
-  
-    const lfo = audioCtx.createOscillator();
-    lfo.type = 'sine';
-    lfo.frequency.value = 0.5;
-  
-    delayNode.connect(feedbackNode);
-    feedbackNode.connect(delayNode);
-    delayNode.connect(audioFilter);
-    audioFilter.connect(audioCtx.destination);
-    lfo.connect(lfoGainNode.gain);
-    lfoGainNode.connect(delayNode.delayTime);
-  
-    lfo.start();
-  
-    return delayNode;
-};
-
-export const tremolo = audioCtx => {
-    const lfo = audioCtx.createOscillator();
-  lfo.type = 'sine'; 
-  const gainNode = audioCtx.createGain();
-  lfo.frequency.value = 5; 
-  gainNode.gain.value = 0.5; 
-  lfo.connect(gainNode.gain);
-  lfo.start();
-
-  return gainNode;
-};
-
-export const delayWithFeedback = audioCtx => {
-
-    const delayNode = audioCtx.createDelay();
-    delayNode.delayTime.value = 0.5;
-    
-    
-    const feedbackNode = audioCtx.createGain();
-    feedbackNode.gain.value = 0.5; 
-    
-    const audioFilter = audioCtx.createBiquadFilter();
-    audioFilter.type = 'lowpass';
-    audioFilter.frequency.value = 2000; 
-    
-    delayNode.connect(audioFilter);
-    audioFilter.connect(feedbackNode);
-    feedbackNode.connect(delayNode);
-    
-
-    return feedbackNode;
-};
-
-export const wahWah = audioCtx => {
-const audioFilter = audioCtx.createBiquadFilter();
-audioFilter.type = 'bandpass';
-audioFilter.frequency.value = 1000; 
-audioFilter.Q.value = 1; 
-
-const lfo = audioCtx.createOscillator();
-const lfoGain = audioCtx.createGain();
-lfo.frequency.value = 1; 
-lfoGain.gain.value = 500;
-
-lfo.connect(lfoGain);
-lfoGain.connect(audioFilter.frequency);
-
-lfo.start();
-
-    return audioFilter;
-};
-
-
-
 // TODO make filter functions here
 
 // Method signature:
@@ -200,6 +118,24 @@ export const getTestFilters = () => {
 	return res;
 };
 
+// Filter options
+const detuneOption = new FilterOption('frequency', -MAX_NUM, MAX_NUM, 0, (filter, option) => filter.detune.value = option.value);
+const frequencyOption = new FilterOption('frequency', -24000, 24000, 200, (filter, option) => filter.frequency.value = option.value);
+const gainOption = new FilterOption('gain', -MAX_NUM, MAX_NUM, 0, (filter, option) => filter.gain.value = option.value);
+const qOption = new FilterOption('frequency', -MAX_NUM, MAX_NUM, 1, (filter, option) => filter.Q.value = option.value);
+
+const lowpassFilter = new Filter('LowPass', lowpass, lowpassIcon, [frequencyOption.clone()]);
+const lowpassFilter = new Filter('HighPass', highpass, lowpassIcon, [frequencyOption.clone()]);
+const lowpassFilter = new Filter('lowpass', lowpass, lowpassIcon, [frequencyOption.clone()]);
+const lowpassFilter = new Filter('lowpass', lowpass, lowpassIcon, [frequencyOption.clone()]);
+const lowpassFilter = new Filter('lowpass', lowpass, lowpassIcon, [frequencyOption.clone()]);const lowpassFilter = new Filter('lowpass', lowpass, lowpassIcon, [frequencyOption.clone()]);
+const lowpass2Filter = new Filter('lowpass2', lowpass2, lowpassIcon, [frequencyOption.clone(), gainOption.clone()]);
+const lowpass3Filter = new Filter('lowpass3', lowpass, lowpassIcon);
+export default [
+	lowpassFilter,
+	lowpass2Filter,
+	lowpass3Filter
+];
 export default [
     constructFilter('LowPass', lowpass),
     constructFilter('HighPass', highpass),
