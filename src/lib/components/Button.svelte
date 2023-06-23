@@ -56,5 +56,9 @@
 		img, span.spinner {
 			margin-right: $button-icon-label-gap;
 		}
+
+		span {
+			white-space: nowrap;
+		}
 	}
 </style>
