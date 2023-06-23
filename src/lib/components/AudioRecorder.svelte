@@ -1,9 +1,12 @@
 <script>
+	export let getAudioCtx;
+
 	import Button from './Button.svelte';
 	import { createEventDispatcher } from 'svelte';
 	import { secondsToMMSS } from '$lib/utils.js';
-
-	export let getAudioCtx;
+	import recordIcon from '$static/images/record.svg';
+	import recordFillIcon from '$static/images/record-fill.svg';
+	
 
 	const dispatch = createEventDispatcher();
 
@@ -12,6 +15,7 @@
 	let seconds = 0;
 	const onClick = () => {
 		if (mediaRecorder) {
+			// Stop recording
 			mediaRecorder.stop();
 			mediaRecorder = undefined;
 			clearInterval(timeInterval);
@@ -19,6 +23,7 @@
 			return;
 		}
 		
+		// Start recording
 		navigator.mediaDevices
 			.getUserMedia({audio: true, video: false})
 			.then(async stream => {
@@ -39,12 +44,12 @@
 					blob.name = 'Recording.wav';
 					blob.url = URL.createObjectURL(blob);
 					dispatch('data', blob);
-					console.log('Stopped recording');
+					console.debug('Stopped recording');
 				};
 
 				mediaRecorder.start();
 				timeInterval = setInterval(() => seconds++, 1000);
-				console.log('Started recording');
+				console.debug('Started recording');
 			});
 	};
 
@@ -54,4 +59,8 @@
 
 </script>
 
-<Button label={mediaRecorder ? `Stop recording ${formatSeconds(seconds)}` : 'Start recording'} on:click={onClick} />
+{#if mediaRecorder}
+	<Button icon={recordFillIcon} label={`Stop recording ${formatSeconds(seconds)}`} on:click={onClick} />
+{:else}
+	<Button icon={recordIcon} label={'Start recording'} on:click={onClick} />
+{/if}
