@@ -5,12 +5,12 @@
 	// Use filterManager.addFilter and filterManager.removeFilter to add / remove filters
 	// (See the definition of class FilterManager in src/lib/audio_utils.js for more information and docs)
 
-	// Constants for Slider
+	// const for Slider
 	export const min = -10;
 	export const max = 10;
 	export const step = 1;
 
-	// More Constants
+	// eq vars
 	const octaveString = [
 		"32",
 		"64",
@@ -24,43 +24,61 @@
 		"16000",
 	];
 	const octaves = [32, 64, 125, 250, 500, 1000, 2000, 4000, 8000, 16000];
+	// displays button actions
 	let updater = "Eq not initialized";
-	let state = 2;
-	let bool = true;
-	let applied = false;
+	// Boolean for toggle EQGui
+	let bool = false;
+	// List for Slider-EventListener
+	export let sliderList = [];
 
-	// Initialise Slider-Inputs
+	// Initialize Slider-Inputs
 	export let input = [];
 	// Set input-default to 0;
 	for (let i = 0; i < 10; i++) {
 		input[i] = 0;
-		//document.getElementById(`filter${octaveString[i]}`).disabled = bool;
+		// TODO: initialize sliders disabled
+		//document.getElementById(`filter${octaveString[i]}`).disabled = true;
 	}
 
-	
 
+	let state;
+	let applied = false;
+	/**
+	 * function called by Eq-Button. 
+	 * Cases:
+	 * 0: 	-Applies Eq to audio -> creating filter via filtermanager calls
+	 * 		-Enable slider-Gui
+	 * 1: 	-Removes Eq from audio -> deleting filter via filtermanager calls
+	 * 		-Disable slider-Gui
+	 * 2: 	-Nothing. Shows Message that there is no audio
+	 */
 	function toggleEq() {
 		// Set state for switch
 		let ready = $filterManager.verifyReady();
+		// filtermanager is initialized
 		if (ready) {
+			// Eq is NOT already applied
 			if (!applied ) {
 				state = 0;
+			// Eq is already applied
 			} else {
 				state = 1;
 			}
+		// filtermanager is NOT initialized
 		} else {
 			state = 2;
 		}
 		
 		updater = "state = "+state;
 		switch (state) {
+			// apply Eq
 			case 0:
+				// create filter and apply them
 				$filterManager.applyEq(initEq(audioCtx));
 				//filterManager.set($filterManager);
 				updater = "Filter erstellt";
 
-				// Add EventListener for slider
-				let sliderList = [];
+				// Add EventListener for sliders
 				for (let i = 0; i < 10; i++) {
 					sliderList[i] = document.getElementById(`filter${octaveString[i]}`);
 					sliderList[i].addEventListener("input", function() {
@@ -68,9 +86,14 @@
 					}, false);
 				}
 
+				// disable Gui
+				toggleEqGui(bool);
+				bool = true;
+
 				applied = true;
 				updater = "Eq applied successfully";
 				break;
+			// remove Eq
 			case 1:
 				// Remove eq-filter
 				for (let i = 0; i < 10; i++) {
@@ -78,32 +101,50 @@
 					//filterManager.set($filterManager);
 				}
 		
-				// Disable Gui
-				for (let i = 0; i < 10; i++) {
-					document.getElementById(`filter${octaveString[i]}`).disabled = bool;
-				}
-				bool = !bool;
+				// disable Gui
+				toggleEqGui(bool);
+				bool = false;
 
 				applied = false;
 				updater = "Eq removed successfully";
 				break;
+			// filtermanger not initialized
 			case 2:
 				updater = "No audio"
 				break;
 			default:
-				
 				updater = "Fehler";
 		}
 	}
 
-	// update filter gain
+
+	/**
+	 * Enable/Disable Eq-slider
+	 * @param bool boolean
+	 */
+	function toggleEqGui (bool) {
+		for (let i = 0; i < 10; i++) {
+			document.getElementById(`filter${octaveString[i]}`).disabled = bool;
+		}
+	}
+
+
+	/**
+	 * Update gain of filter with given index (Id) via filtermanager-call
+	 * @param i index of octaveString to get filter-ID
+	 * @param input value that became the new gain
+	 */
 	function updateFilter(i, input) {
 			$filterManager.updateGain(octaveString[i], input);
 			filterManager.set($filterManager);
 	}
 
-	// Filter
 
+	/**
+	 * Function that can be passed to filtermanager as equivalent to makeFilter
+	 * Creates a List of the Eq-filter
+	 * @param audioCtx audioContext to create Filter
+	 */
 	function initEq(audioCtx) {
 		// Create filterList
 		let filterList = [];
