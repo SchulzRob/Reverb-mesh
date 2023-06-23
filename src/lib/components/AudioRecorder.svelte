@@ -62,5 +62,5 @@
 {#if mediaRecorder}
 	<Button icon={recordFillIcon} label={`Stop recording ${formatSeconds(seconds)}`} on:click={onClick} />
 {:else}
-	<Button icon={recordIcon} label={'Start recording'} on:click={onClick} />
+	<Button icon={recordIcon} label={'Record audio'} on:click={onClick} />
 {/if}

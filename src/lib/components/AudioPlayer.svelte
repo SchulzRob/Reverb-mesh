@@ -96,8 +96,8 @@
 
 	<div class="buttons">
 		<FileUploadButton on:upload={onUpload} label="Upload audio" accept="audio/*" style="margin-bottom: 0.25rem;" />
-		<FileDownloadButton {getFile} label="Download audio" waitingLabel="Rendering audio.." />
 		<AudioRecorder getAudioCtx={() => {init(); return audioCtx;}} on:data={onRecording} />
+		<FileDownloadButton {getFile} label="Download audio" waitingLabel="Rendering audio.." style="margin-top: 0.25rem;" />
 	</div>
 </div>
 
