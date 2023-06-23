@@ -71,7 +71,7 @@ export class FilterManager {
 			console.log(`Could not remove filter ${id}: Not applied`);
 			return false;
 		}
-
+		
 		const { makeFilter, filter } = this.filters[id];
 		filter.disconnect({ 'destination': this.audioCtx.destination });
 		this.audioSource.disconnect(filter);
@@ -84,6 +84,60 @@ export class FilterManager {
 
 		return delete this.filters[id];
 	}
+
+	
+	// Add Eq-functionality
+
+	applyEq(initEq) {
+		if (!this.verifyReady()) {
+			return false;
+		}
+		const filterIds = ["32", "64", "125", "250", "500", "1000", "2000", "4000", "8000", "16000"];
+		
+
+		for (let i = 0; i < 10; i++) {
+			if (filterIds[i] in this.filters) {
+				console.log(`Could not apply filter ${filterIds[i]}: Already applied`);
+				return false;
+			}
+		}
+		console.log(`adding eq-filter`);
+		let filterList = initEq(this.audioCtx);
+
+		// Add filter to this.filters
+		for (let i = 0; i < 10; i++) {
+			this.filters[filterIds[i]] = {
+				'makeFilter': initEq,
+				'filter': filterList[i]
+			};
+		}
+
+		// Pipe filterLIst
+		for (let i = 0; i < 10; i++) {
+			const { makeFilter, filter } = this.filters[filterIds[i]];
+			switch (i) {
+				case -1:
+					const { makeFilter0, filter0 } = this.filters[filterIds[0]];
+					this.audioSrc.connect(filter0);
+					break;
+				case 9:
+					filter.connect(audioCtx.destination);
+					break;
+				default:
+					const { makeFilter1, filter1 } = this.filters[filterIds[i+1]];
+					filter.connect(filter1);
+			}        
+		}
+	}
+
+	updateGain(id, gainInput) {
+		const { makeFilter, filter } = this.filters[id];
+		filter.gain.value = gainInput;
+	}
+
+
+
+
 
 	/**
 	 * @returns {list[object[makeFilter, filter]]} the applied filters. makeFilter is the function used to create the filter
