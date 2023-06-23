@@ -11,10 +11,15 @@
 	import filters from '$lib/filters.js';
 
 	const title = 'Reverb-mesh';
+	let audioTitle;
 </script>
 
 <svelte:head>
-	<title>{title}</title>
+	{#if audioTitle}
+		<title>{audioTitle} - {title}</title>
+	{:else}
+		<title>{title}</title>
+	{/if}
 </svelte:head>
 
 <div class="app">
@@ -24,7 +29,7 @@
 		<FilterSelector {filters} />
 
 		<div class="right-box">
-			<AudioPlayer />
+			<AudioPlayer bind:audioTitle={audioTitle} />
 			<Equalizer />
 		</div>
 	</main>

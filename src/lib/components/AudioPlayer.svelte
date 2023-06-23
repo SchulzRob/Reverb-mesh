@@ -1,4 +1,6 @@
 <script>
+	export let audioTitle = undefined;
+
 	import FileUploadButton from './FileUploadButton.svelte';
 	import FileDownloadButton from './FileDownloadButton.svelte';
 	import InfoBox from './InfoBox.svelte';
@@ -12,6 +14,14 @@
 	let player;
 	let sourceFile;
 
+	$: {
+		if (sourceFile) {
+			audioTitle = sourceFile.name.split('.')[0];
+		} else {
+			audioTitle = undefined;
+		}
+	}
+	
 	const clearSourceURL = () => {
 		if (sourceFile != undefined && sourceFile.url != undefined) {
 			URL.revokeObjectURL(sourceFile.url);
@@ -78,7 +88,7 @@
 		{#if sourceFile == undefined}
 			<InfoBox type="warn" text="No audio" />
 		{:else}
-			<InfoBox type="info" text={`Current audio: ${sourceFile.name.split('.')[0]}`} />
+			<InfoBox type="info" text={`Current audio: ${audioTitle}`} />
 		{/if}
 
 		<audio bind:this={player} controls="controls"></audio>
