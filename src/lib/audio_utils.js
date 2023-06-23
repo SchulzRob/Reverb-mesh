@@ -119,19 +119,16 @@ export class FilterManager {
 		}
 
 		// Pipe this.filters[Eq-filter Ids]
-		for (let i = 0; i < 10; i++) {
-			const { makeFilter, filter } = this.filters[filterIds[i]];
+		for (let i = -1; i < 10; i++) {
 			switch (i) {
 				case -1:
-					const { makeFilter0, filter0 } = this.filters[filterIds[0]];
-					this.audioSrc.connect(filter0);
+					this.audioSource.connect(filterList[0]);
 					break;
 				case 9:
-					filter.connect(audioCtx.destination);
+					filterList[i].connect(this.audioCtx.destination);
 					break;
 				default:
-					const { makeFilter1, filter1 } = this.filters[filterIds[i+1]];
-					filter.connect(filter1);
+					filterList[i].connect(filterList[i+1]);
 			}        
 		}
 	}

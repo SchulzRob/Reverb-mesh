@@ -1,6 +1,7 @@
 <script>
 	import { filterManager } from "$lib/stores/stores.js";
 	import { add_iframe_resize_listener, bind } from "svelte/internal";
+	import { onMount } from 'svelte';
 
 	// Use filterManager.addFilter and filterManager.removeFilter to add / remove filters
 	// (See the definition of class FilterManager in src/lib/audio_utils.js for more information and docs)
@@ -35,10 +36,14 @@
 	export let input = [];
 	// Set input-default to 0;
 	for (let i = 0; i < 10; i++) {
-		input[i] = 0;
-		// TODO: initialize sliders disabled
-		//document.getElementById(`filter${octaveString[i]}`).disabled = true;
+		input[i] = 0;		
 	}
+
+
+	// Disable sliders when intitialized
+	onMount(() => {
+		toggleEqGui(true);
+	});
 
 
 	let state;
@@ -74,10 +79,12 @@
 			// apply Eq
 			case 0:
 				// create filter and apply them
-				$filterManager.applyEq(initEq(audioCtx));
+				$filterManager.applyEq(initEq);
 				//filterManager.set($filterManager);
 				updater = "Filter erstellt";
 
+
+				/*	Replaced by evtLst()
 				// Add EventListener for sliders
 				for (let i = 0; i < 10; i++) {
 					sliderList[i] = document.getElementById(`filter${octaveString[i]}`);
@@ -85,6 +92,7 @@
 						updateFilter(i, input[i]);
 					}, false);
 				}
+				*/
 
 				// disable Gui
 				toggleEqGui(bool);
@@ -111,11 +119,13 @@
 			// filtermanger not initialized
 			case 2:
 				updater = "No audio"
+				toggleEqGui(true);
 				break;
 			default:
 				updater = "Fehler";
 		}
 	}
+
 
 
 	/**
@@ -125,6 +135,22 @@
 	function toggleEqGui (bool) {
 		for (let i = 0; i < 10; i++) {
 			document.getElementById(`filter${octaveString[i]}`).disabled = bool;
+		}
+	}
+
+
+
+	// TODO: reactive binding with input 
+	// on:intput html
+	// svelte reactiv bindings 
+
+	/**
+	 * Called, when a slider-value has changed.
+	 * Update Eq-filter gains via updateFilter (via filtermanager)
+	 */
+	function evtLst() {
+		for (let i = 0; i < 10; i++) {
+			updateFilter(i, input[i]);
 		}
 	}
 
@@ -193,6 +219,7 @@
 					{max}
 					{step}
 					bind:value={input[0]}
+					on:change={evtLst}
 				/></td
 			>
 			<td>{input[0]}</td>
@@ -207,6 +234,7 @@
 					{max}
 					{step}
 					bind:value={input[1]}
+					on:change={evtLst}
 				/></td
 			>
 			<td>{input[1]}</td>
@@ -221,6 +249,7 @@
 					{max}
 					{step}
 					bind:value={input[2]}
+					on:change={evtLst}
 				/></td
 			>
 			<td>{input[2]}</td>
@@ -235,6 +264,7 @@
 					{max}
 					{step}
 					bind:value={input[3]}
+					on:change={evtLst}
 				/></td
 			>
 			<td>{input[3]}</td>
@@ -249,6 +279,7 @@
 					{max}
 					{step}
 					bind:value={input[4]}
+					on:change={evtLst}
 				/></td
 			>
 			<td>{input[4]}</td>
@@ -263,6 +294,7 @@
 					{max}
 					{step}
 					bind:value={input[5]}
+					on:change={evtLst}
 				/></td
 			>
 			<td>{input[5]}</td>
@@ -277,6 +309,7 @@
 					{max}
 					{step}
 					bind:value={input[6]}
+					on:change={evtLst}
 				/></td
 			>
 			<td>{input[6]}</td>
@@ -291,6 +324,7 @@
 					{max}
 					{step}
 					bind:value={input[7]}
+					on:change={evtLst}
 				/></td
 			>
 			<td>{input[7]}</td>
@@ -305,6 +339,7 @@
 					{max}
 					{step}
 					bind:value={input[8]}
+					on:change={evtLst}
 				/></td
 			>
 			<td>{input[8]}</td>
@@ -319,6 +354,7 @@
 					{max}
 					{step}
 					bind:value={input[9]}
+					on:change={evtLst}
 				/></td
 			>
 			<td>{input[9]}</td>
