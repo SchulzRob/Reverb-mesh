@@ -3,9 +3,6 @@
 
 	import GridTile from './GridTile.svelte';
 	import OptionMenu from './OptionMenu.svelte';
-
-	// TODO bind: in each for selected grid tile
-	// TODO rename onselect, ondeselect to onenable ondisable
 </script>
 
 <div class="container">
@@ -17,11 +14,10 @@
 <style lang="scss">
 	div.container {
 		width: 100%;
-		display: flex;
-		flex-flow: row;
-		flex-wrap: wrap;
+		display: grid;
+		box-sizing: border-box;
 		padding: 0.5rem;
-		align-items: flex-start;
+		grid-template-columns: repeat(auto-fit, minmax(110px, max-content));
 		justify-content: center;
 	}
 </style>
