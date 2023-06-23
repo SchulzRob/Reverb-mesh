@@ -154,7 +154,7 @@ export class FilterManager {
 			return false;
 		}
 
-		if (!id in this.filters) {
+		if (!(id in this.filters)) {
 			console.log(`Could not remove filter ${id}: Not applied`);
 			return false;
 		}
@@ -174,6 +174,28 @@ export class FilterManager {
 		console.log(`Removed filter ${id}`);
 
 		return delete this.filters[id];
+	}
+
+	/**
+	 * Reconnects all filters by disconnecting and then connecting them again. 
+	 * Useful to rewire the filters when the internal stream of the audio source is changed.
+	 */
+	rewireFilters() {
+		if (!this.verifyReady()) {
+			return false;
+		}
+
+		if (Object.keys(this.filters).length > 0) {
+			this.audioSource.disconnect();
+
+			for (const id in this.filters) {
+				const { makeFilter, filter } = this.filters[id];
+				filter.disconnect();
+				
+				this.audioSource.connect(filter);
+				filter.connect(this.audioCtx.destination);
+			}
+		}
 	}
 
 	/**

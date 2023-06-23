@@ -5,7 +5,7 @@
 	import FileDownloadButton from './FileDownloadButton.svelte';
 	import InfoBox from './InfoBox.svelte';
 	import AudioRecorder from './AudioRecorder.svelte';
-	import { onDestroy } from 'svelte';
+	import { onMount, onDestroy } from 'svelte';
 	import exclamationCircle from '$lib/images/exclamation-circle.svg';
 	import infoCircle from '$lib/images/info-circle.svg';
 	import { renderAudio } from '$lib/audio_utils.js';
@@ -58,6 +58,7 @@
 		init();
 
 		audioSource.connect(audioCtx.destination);
+		console.log($filterManager.getFilters());
 	};
 
 	const getFile = async () => {
@@ -79,6 +80,9 @@
 		sourceFile = evt.detail;
 		player.src = sourceFile.url;
 	};
+	
+	// Rewire filters when the audio source is changed
+	onMount(() => player.onloadedmetadata = () => $filterManager.rewireFilters());
 
 	onDestroy(clearSourceURL);
 </script>
