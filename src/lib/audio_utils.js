@@ -88,23 +88,29 @@ export class FilterManager {
 	
 	// Add Eq-functionality
 
+	/**
+	 * Add the Eq-Filter to the this.filters and pipe them 
+	 * @param {function(audioCtx) -> AudioNode[] } initEq function that creates a List with the Eq filters
+	 * @returns 
+	 */
 	applyEq(initEq) {
 		if (!this.verifyReady()) {
 			return false;
 		}
+
 		const filterIds = ["32", "64", "125", "250", "500", "1000", "2000", "4000", "8000", "16000"];
 		
-
 		for (let i = 0; i < 10; i++) {
 			if (filterIds[i] in this.filters) {
 				console.log(`Could not apply filter ${filterIds[i]}: Already applied`);
 				return false;
 			}
 		}
-		console.log(`adding eq-filter`);
+
+		// Creating list with Eq-filter
 		let filterList = initEq(this.audioCtx);
 
-		// Add filter to this.filters
+		// Add Eq-filter to this.filters
 		for (let i = 0; i < 10; i++) {
 			this.filters[filterIds[i]] = {
 				'makeFilter': initEq,
@@ -112,7 +118,7 @@ export class FilterManager {
 			};
 		}
 
-		// Pipe filterLIst
+		// Pipe this.filters[Eq-filter Ids]
 		for (let i = 0; i < 10; i++) {
 			const { makeFilter, filter } = this.filters[filterIds[i]];
 			switch (i) {
@@ -130,6 +136,11 @@ export class FilterManager {
 		}
 	}
 
+	/**
+	 * Update gain from filter (this.filters) with given id to given value
+	 * @param {string} id 
+	 * @param {number} gainInput 
+	 */
 	updateGain(id, gainInput) {
 		const { makeFilter, filter } = this.filters[id];
 		filter.gain.value = gainInput;
