@@ -23,10 +23,10 @@ export const lowpass2 = audioCtx => {
 };
 
 // Filter options
-const detuneOption = new FilterOption('frequency', -MAX_NUM, MAX_NUM, 0, (filter, option) => filter.detune.value = option.value);
-const frequencyOption = new FilterOption('frequency', -24000, 24000, 200, (filter, option) => filter.frequency.value = option.value);
-const gainOption = new FilterOption('gain', -MAX_NUM, MAX_NUM, 0, (filter, option) => filter.gain.value = option.value);
-const qOption = new FilterOption('frequency', -MAX_NUM, MAX_NUM, 1, (filter, option) => filter.Q.value = option.value);
+const detuneOption = new FilterOption('detune', -MAX_NUM, MAX_NUM, 0, (filter, option) => filter.detune.value = option.value);
+const frequencyOption = new FilterOption('frequency', 0, 24000, 200, (filter, option) => filter.frequency.value = option.value);
+const gainOption = new FilterOption('gain', -MAX_NUM, 10, 0, (filter, option) => filter.gain.value = option.value);
+const qOption = new FilterOption('frequency', -MAX_NUM, 10, 1, (filter, option) => filter.Q.value = option.value);
 
 const lowpassFilter = new Filter('lowpass', lowpass, lowpassIcon, [frequencyOption.clone()]);
 const lowpass2Filter = new Filter('lowpass2', lowpass2, lowpassIcon, [frequencyOption.clone(), gainOption.clone()]);
