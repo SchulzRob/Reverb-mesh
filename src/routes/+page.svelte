@@ -35,10 +35,13 @@
 </div>
 
 <style lang="scss">
+	@import "variables";
+
 	.app {
 		display: flex;
 		flex-direction: column;
 		height: 100%;
+		background-color: $primary-background-color;
 	}
 
 	main {

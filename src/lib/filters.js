@@ -1,3 +1,7 @@
+import { FilterOption, Filter, MAX_NUM } from '$lib/audio_utils.js';
+import lowpassIcon from '$static/images/lowpass.svg';
+
+
 export const lowpass = audioCtx => {
 	const audioFilter = audioCtx.createBiquadFilter();
 
@@ -18,41 +22,18 @@ export const lowpass2 = audioCtx => {
 	return audioFilter;
 };
 
-// TODO make filter functions here
+// Filter options
+const detuneOption = new FilterOption('frequency', -MAX_NUM, MAX_NUM, 0, (filter, option) => filter.detune.value = option.value);
+const frequencyOption = new FilterOption('frequency', -24000, 24000, 200, (filter, option) => filter.frequency.value = option.value);
+const gainOption = new FilterOption('gain', -MAX_NUM, MAX_NUM, 0, (filter, option) => filter.gain.value = option.value);
+const qOption = new FilterOption('frequency', -MAX_NUM, MAX_NUM, 1, (filter, option) => filter.Q.value = option.value);
 
-// Method signature:
-// Parameters:
-//   - audioCtx: AudioContext (https://developer.mozilla.org/en-US/docs/Web/API/AudioContext)
-//
-// Return:
-//   - audioFilter: AudioNode (https://developer.mozilla.org/en-US/docs/Web/API/AudioNode)
-//                  (All filters are AudioNodes)
-
-
-
-
-const constructFilter = (name, makeFilter) => {
-	return {
-		'label': name,
-		'makeFilter': makeFilter 
-	};
-};
-
-export const getTestFilters = () => {
-	const lpass = constructFilter('LowPass', lowpass);
-	const res = [lpass];
-
-	for (let i = 0; i < 10; i++) {
-		res.push(constructFilter(i%2==0 ? 'Random' : 'BandPass', undefined));	
-	}
-
-	res.push(lpass);
-
-	return res;
-};
+const lowpassFilter = new Filter('lowpass', lowpass, lowpassIcon, [frequencyOption.clone()]);
+const lowpass2Filter = new Filter('lowpass2', lowpass2, lowpassIcon, [frequencyOption.clone(), gainOption.clone()]);
+const lowpass3Filter = new Filter('lowpass3', lowpass, lowpassIcon);
 
 export default [
-	constructFilter('LowPass', lowpass),
-	constructFilter('LowPass2', lowpass2),
-	... getTestFilters() // TODO Test filters
+	lowpassFilter,
+	lowpass2Filter,
+	lowpass3Filter
 ];

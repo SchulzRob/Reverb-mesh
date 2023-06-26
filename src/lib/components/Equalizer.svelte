@@ -29,8 +29,6 @@
 	let updater = "Eq not initialized";
 	// Boolean for toggle EQGui
 	let bool = false;
-	// List for Slider-EventListener
-	//export let sliderList = [];
 
 	// Initialize Slider-Inputs
 	export let input = [];
@@ -83,17 +81,6 @@
 				//filterManager.set($filterManager);
 				updater = "Filter erstellt";
 
-
-				/*	Replaced by evtLst()
-				// Add EventListener for sliders
-				for (let i = 0; i < 10; i++) {
-					sliderList[i] = document.getElementById(`filter${octaveString[i]}`);
-					sliderList[i].addEventListener("input", function() {
-						updateFilter(i, input[i]);
-					}, false);
-				}
-				*/
-
 				// disable Gui
 				toggleEqGui(bool);
 				bool = true;
@@ -105,7 +92,12 @@
 			case 1:
 				// Remove eq-filter
 				$filterManager.disconnectEq();
-		
+				
+				// Reset slider
+				for (let i = 0; i < 10; i++) {
+					input[i] = 0;
+				}
+
 				// disable Gui
 				toggleEqGui(bool);
 				bool = false;
@@ -124,7 +116,6 @@
 	}
 
 
-
 	/**
 	 * Enable/Disable Eq-slider
 	 * @param bool boolean
@@ -135,11 +126,6 @@
 		}
 	}
 
-
-
-	// TODO: reactive binding with input 
-	// on:intput html
-	// svelte reactiv bindings 
 
 	/**
 	 * Called, when a slider-value has:inputd.

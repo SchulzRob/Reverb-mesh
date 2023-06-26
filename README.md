@@ -48,5 +48,6 @@ You can preview the production build with `npm run preview`.
 
 ## TODO
 - [ ] More filters
-- [ ] Add filter options (f.i. set frequency, quality)
+- [x] Add filter options (f.i. set frequency, quality)
 - [ ] Equalizer
+- [ ] Microphone input as audio source
