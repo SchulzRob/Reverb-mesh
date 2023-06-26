@@ -104,10 +104,7 @@
 			// remove Eq
 			case 1:
 				// Remove eq-filter
-				for (let i = 0; i < 10; i++) {
-					$filterManager.removeFilter(octaveString[i]);
-					//filterManager.set($filterManager);
-				}
+				$filterManager.disconnectEq();
 		
 				// disable Gui
 				toggleEqGui(bool);
@@ -145,12 +142,12 @@
 	// svelte reactiv bindings 
 
 	/**
-	 * Called, when a slider-value has changed.
+	 * Called, when a slider-value has:inputd.
 	 * Update Eq-filter gains via updateFilter (via filtermanager)
 	 */
 	function evtLst() {
 		for (let i = 0; i < 10; i++) {
-			updateFilter(i, input[i]);
+			updateFilter(octaveString[i], input[i]);
 		}
 	}
 
@@ -160,9 +157,9 @@
 	 * @param i index of octaveString to get filter-ID
 	 * @param input value that became the new gain
 	 */
-	function updateFilter(i, input) {
-			$filterManager.updateGain(octaveString[i], input);
-			filterManager.set($filterManager);
+	function updateFilter(id, input) {
+			$filterManager.updateGain(id, input);
+			//filterManager.set($filterManager);
 	}
 
 
@@ -179,7 +176,7 @@
 		}
 
 		// Fill filterList
-		for (let i = 1; i < 9; i++) {
+		for (let i = 0; i < 10; i++) {
 			switch (i) {
 				case 0:
 					filterList[i].type = "lowshelf";
