@@ -30,7 +30,7 @@
 	// Boolean for toggle EQGui
 	let bool = false;
 	// List for Slider-EventListener
-	export let sliderList = [];
+	//export let sliderList = [];
 
 	// Initialize Slider-Inputs
 	export let input = [];
