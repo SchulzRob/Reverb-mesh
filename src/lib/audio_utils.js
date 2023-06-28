@@ -86,6 +86,7 @@ export class FilterManager {
 		this.audioCtx = audioCtx;
 		this.audioSource = audioSource;
 		this.filters = {};
+		this.originSrc = audioSource;
 
 		this.ready = true;
 	}
@@ -136,11 +137,17 @@ export class FilterManager {
 		filter.connect(this.audioCtx.destination);
 
 		// Don't pipe original audio into output
-		if (Object.keys(this.filters).length == 1) {
-			this.audioSource.disconnect(this.audioCtx.destination);
+		if ('32' in this.filters) {
+			if (Object.keys(this.filters).length == 11) {
+				this.audioSource.disconnect(this.audioCtx.destination);
+			}
+		} else {
+			if (Object.keys(this.filters).length == 1) {
+				this.audioSource.disconnect(this.audioCtx.destination);
+			}
 		}
-		console.log(`Applied filter ${id}`);
 
+		console.log(`Applied filter ${id}`);
 		return true;
 	}
 
@@ -168,9 +175,16 @@ export class FilterManager {
 		}
 
 		// Pipe original audio into output if no filters are applied
-		if (Object.keys(this.filters).length == 1) {
-			this.audioSource.connect(this.audioCtx.destination);
+		if ('32' in this.filters) {
+			if (Object.keys(this.filters).length == 11) {
+				this.audioSource.connect(this.audioCtx.destination);
+			}
+		} else {
+			if (Object.keys(this.filters).length == 1) {
+				this.audioSource.connect(this.audioCtx.destination);
+			}
 		}
+
 		console.log(`Removed filter ${id}`);
 
 		return delete this.filters[id];
@@ -214,13 +228,32 @@ export class FilterManager {
 			switch (i) {
 				case -1:
 					const filter32 = this.filters[filterIds[0]];
-					this.audioSource.connect(filter32.filter);
+					this.originSrc.connect(filter32.filter);
 					console.log(`Audiosource connected to Filter32`);
 					break;
 				case 9:
 					const filter16000 = this.filters[filterIds[i]];
-					filter16000.filter.connect(this.audioCtx.destination);
-					console.log(`Filter16000 connected to destination`);
+
+					// If no other filters are applied, connect last filter to dest and disconnect source from dest
+					if (Object.keys(this.filters).length == 10) {
+						this.audioSource.disconnect(this.audioCtx.destination);
+						console.log(`Source disconnected from destination`);
+						filter16000.filter.connect(this.audioCtx.destination);
+						console.log(`Filter16000 connected to destination`);
+					// If other filters are applied, skip Eq-filter and connect last Eq-filter with the other filers and disconnect them from source
+					} else {
+						for (const filterID in this.filters) {
+							if (filterIds.includes(filterID)) {
+								continue;
+							}
+							console.log(`Eq filter skipped.`);
+							const filter = this.filters[filterID];
+							filter16000.filter.connect(filter.filter);
+							console.log(`filter${filterIds[i]} connected to ${filterID}`);
+							this.audioSource.disconnect(filter.filter);
+							console.log(`Source disconneced from ${filterID}`);
+						}	
+					}
 					break;
 				default:
 					const filter0 = this.filters[filterIds[i]];
@@ -229,15 +262,11 @@ export class FilterManager {
 					console.log(`Filter${filterIds[i]} connected to filter${filterIds[i+1]}`);
 			}        
 		}
-
-
-		//TODO:
-		// For multiple filter set last filter as audiosource
-
-
-		// Don't pipe original audio into output
-		this.audioSource.disconnect(this.audioCtx.destination);
 		
+		// Set last Eq-filter as audioSource, so future filter will connect to EQ
+		const newSrc = this.filters[filterIds[9]].filter;
+		this.audioSource = newSrc;
+
 		console.log(`Eq applied successfully`);
 	}
 
@@ -265,32 +294,49 @@ export class FilterManager {
 			switch (i) {
 				case -1:
 					const filter32 = this.filters[filterIds[0]];
-					this.audioSource.disconnect(filter32.filter);
+					this.originSrc.disconnect(filter32.filter);
 					console.log(`Audiosource disconnects from Filter32`);
 					break;
 				case 9:
+					// !! Important !!  Reset audioSource
+					this.audioSource = this.originSrc;
 					const filter16000 = this.filters[filterIds[i]];
-					filter16000.filter.disconnect(this.audioCtx.destination);
-					console.log(`Filter16000 disconnects from destination`);
+					
+					// If no other filters are applied, disconnect last filter from dest and connect Source with dest
+					if (Object.keys(this.filters).length == 10) {
+						filter16000.filter.disconnect(this.audioCtx.destination);
+						console.log(`Filter16000 disconnects from destination`);
+						this.audioSource.connect(this.audioCtx.destination);
+						console.log(`No more filters applied. Src connected to dest`);
+					// If other filters are applied, skip Eq-filter and connect audioSource with other filters and disconnect last Eq-filter from them.
+					} else {
+						for (const filterID in this.filters) {
+							if (filterIds.includes(filterID)) {
+								continue;
+							}
+							console.log(`Eq filter skipped.`);
+							const filter = this.filters[filterID];
+							this.audioSource.connect(filter.filter);
+							console.log(`audioSource connected to ${filterID}`);
+							filter16000.filter.disconnect(filter.filter);
+							console.log(`Filter16000 disconneced from ${filterID}`);
+						}	
+					}
 					break;
 				default:
-					const filter0 = this.filters[filterIds[i]];
-					const filter1 = this.filters[filterIds[i+1]];
+					let filter0 = this.filters[filterIds[i]];
+					let filter1 = this.filters[filterIds[i+1]];
 					filter0.filter.disconnect(filter1.filter);
+					console.log(`filter${filterIds[i]} disconneced from filter${filterIds[i+1]}`);
 			}        
 		}
-		
+
 		// delete filter
 		for (let i = 0; i < 10; i++) {
 			delete this.filters[filterIds[i]];
 		}
 		console.log(`EQ-filter deleted successfully`);
 
-		// Pipe original audio into output if no filters are applied
-		if (Object.keys(this.filters).length == 0) {
-			this.audioSource.connect(this.audioCtx.destination);
-			console.log(`No more filters applied. Src connected to dest`);
-		}
 		console.log(`EQ removed successfully`);
 	}
 
