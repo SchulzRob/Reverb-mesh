@@ -31,7 +31,8 @@
 
 				const mimeType = 'audio/ogg; codecs=opus';
 				const recordedChunks = [];
-				mediaRecorder = new MediaRecorder(stream, { mimeType: mimeType });
+				//mediaRecorder = new MediaRecorder(stream, { mimeType: mimeType });
+				mediaRecorder = new MediaRecorder(stream);
 
 				mediaRecorder.ondataavailable = evt => {
 					if (evt.data.size > 0) {
