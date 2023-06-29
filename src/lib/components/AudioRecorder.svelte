@@ -29,9 +29,9 @@
 			.then(async stream => {
 				const source = getAudioCtx().createMediaStreamSource(stream);
 
-				const mimeType = 'audio/ogg; codecs=opus';
+				const mimeType = 'audio/webm; codecs=opus';
 				const recordedChunks = [];
-				//mediaRecorder = new MediaRecorder(stream, { mimeType: mimeType });
+				mediaRecorder = new MediaRecorder(stream, { mimeType: mimeType });
 				mediaRecorder = new MediaRecorder(stream);
 
 				mediaRecorder.ondataavailable = evt => {
