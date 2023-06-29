@@ -79,6 +79,7 @@
 		clearSourceURL();
 		sourceFile = evt.detail;
 		player.src = sourceFile.url;
+		audioSource.connect(audioCtx.destination);
 	};
 	
 	// Rewire filters when the audio source is changed
