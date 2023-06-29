@@ -57,7 +57,8 @@
 		width: 80%;
 		margin: 0 auto;
 		box-sizing: border-box;
-		border: 1px solid black;
+		border: $border;
+		border-radius: $border-radius;
 
 		div {
 			margin-left: 1rem;
